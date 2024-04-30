@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-
 const countStudents = (dataPath) => {
   if (!fs.existsSync(dataPath)) {
     throw new Error('Cannot load the database');
@@ -14,6 +13,8 @@ const countStudents = (dataPath) => {
     .trim()
     .split('\n');
   const studentGroups = {};
+  const uniqueStudents = new Set(); // Set to store unique student objects
+
   const dbFieldNames = fileLines[0].split(',');
   const studentPropNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
 
@@ -26,13 +27,14 @@ const countStudents = (dataPath) => {
     }
     const studentEntries = studentPropNames
       .map((propName, idx) => [propName, studentPropValues[idx]]);
-    studentGroups[field].push(Object.fromEntries(studentEntries));
+    const studentObject = Object.fromEntries(studentEntries);
+    studentGroups[field].push(studentObject);
+    uniqueStudents.add(JSON.stringify(studentObject)); // Add stringified student object to set
   }
 
-  const totalStudents = Object
-    .values(studentGroups)
-    .reduce((pre, cur) => (pre || []).length + cur.length);
+  const totalStudents = uniqueStudents.size; // Count unique students
   console.log(`Number of students: ${totalStudents}`);
+  
   for (const [field, group] of Object.entries(studentGroups)) {
     const studentNames = group.map((student) => student.firstname).join(', ');
     console.log(`Number of students in ${field}: ${group.length}. List: ${studentNames}`);
