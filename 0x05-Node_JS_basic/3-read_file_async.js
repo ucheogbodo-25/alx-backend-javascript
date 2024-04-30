@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-
 const countStudents = (dataPath) => new Promise((resolve, reject) => {
   fs.readFile(dataPath, 'utf-8', (err, data) => {
     if (err) {
@@ -13,13 +12,11 @@ const countStudents = (dataPath) => new Promise((resolve, reject) => {
         .split('\n');
       const studentGroups = {};
       const dbFieldNames = fileLines[0].split(',');
-      const studentPropNames = dbFieldNames
-        .slice(0, dbFieldNames.length - 1);
+      const studentPropNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
 
       for (const line of fileLines.slice(1)) {
         const studentRecord = line.split(',');
-        const studentPropValues = studentRecord
-          .slice(0, studentRecord.length - 1);
+        const studentPropValues = studentRecord.slice(0, studentRecord.length - 1);
         const field = studentRecord[studentRecord.length - 1];
         if (!Object.keys(studentGroups).includes(field)) {
           studentGroups[field] = [];
@@ -37,7 +34,7 @@ const countStudents = (dataPath) => new Promise((resolve, reject) => {
         const studentNames = group.map((student) => student.firstname).join(', ');
         console.log(`Number of students in ${field}: ${group.length}. List: ${studentNames}`);
       }
-      resolve(true);
+      resolve(true); // Resolve the Promise with true indicating success
     }
   });
 });
